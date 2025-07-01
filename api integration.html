@@ -1,0 +1,57 @@
+<div class="container">
+  <h1>Weather App</h1>
+  <input type="text" id="cityInput" placeholder="Enter city name" />
+  <button onclick="getWeather()">Get Weather</button>
+  <div id="weatherResult"></div>
+</div>
+
+
+body {
+  font-family: Arial, sans-serif;
+  background: #f0f0f0;
+  text-align: center;
+  padding: 50px;
+}
+.container {
+  background: #fff;
+  padding: 20px;
+  max-width: 400px;
+  margin: auto;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+input, button {
+  padding: 10px;
+  margin-top: 10px;
+  width: 80%;
+  font-size: 16px;
+}
+#weatherResult {
+  margin-top: 20px;
+}
+
+
+
+const apiKey = "ffd9991b2d76bcc911ba49a432a74ea0"; 
+
+async function getWeather() {
+  const city = document.getElementById("cityInput").value;
+  const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+
+    if (data.cod === 200 || data.cod === "200") {
+      const weather = `
+        <h3>${data.name}, ${data.sys.country}</h3>
+        <p><strong>Temperature:</strong> ${data.main.temp}°C</p>
+        <p><strong>Weather:</strong> ${data.weather[0].description}</p>
+      `;
+      document.getElementById("weatherResult").innerHTML = weather;
+    } else {
+      document.getElementById("weatherResult").innerHTML = `<p>City not found!</p>`;
+    }
+  } catch (error) {
+    console.error(error);
+    document.getElementById("weatherResult").innerHTML = `<p>Error fetching data.</p>`;
+  }
+}
